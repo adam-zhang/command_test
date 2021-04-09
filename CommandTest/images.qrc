@@ -1,0 +1,14 @@
+<!DOCTYPE RCC><RCC version="1.0">
+<qresource>
+	<file>resources/images/blade/music_icon.png</file>
+	<file>resources/images/blade/warning_icon.png</file>
+	<file>resources/images/blade/navigation_icon.png</file>
+	<file>resources/images/blade/setting_icon.png</file>
+	<file>resources/images/blade/waring_icon.png</file>
+	<file>resources/images/comet/music_icon.png</file>
+	<file>resources/images/comet/warning_icon.png</file>
+	<file>resources/images/comet/navigation_icon.png</file>
+	<file>resources/images/comet/setting_icon.png</file>
+	<file>resources/images/comet/waring_icon.png</file>
+</qresource>
+</RCC>
