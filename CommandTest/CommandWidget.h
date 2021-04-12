@@ -27,6 +27,10 @@ private:
 	int getIndex();
 	int getLastIndex();
 	void removeWidgets();
+	void addLastOne();
+	void removeFirstOne();
+	void addFirstOne();
+	void removeLastOne();
 	//int getIndex(CommandButton*);
 private:
 	QLayout* buttonContainer_;

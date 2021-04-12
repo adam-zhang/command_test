@@ -10,6 +10,7 @@
 #include "CommandItem.h"
 #include "Logger.h"
 #include <QHBoxLayout>
+#include <QDebug>
 #include <cassert>
 
 CommandWidget::CommandWidget(QWidget* parent)
@@ -89,16 +90,56 @@ int getIndex(const std::vector<CommandButton*>& buttons, CommandButton* button)
 
 void CommandWidget::leftShift()
 {
-	auto i = ::getIndex(buttons_, shownButtons_.back());
-	Logger::write("i", i);
-	if (i == buttons_.size())
-		i = 0;
-	buttonContainer_->addWidget(buttons_[i + 1]);
+	addLastOne();
+	removeFirstOne();
+}
+
+void showHidden(const QObjectList& list)
+{
+	qDebug() << list.size();
+	for(auto child : list)
+	{
+		auto w = dynamic_cast<QWidget*>(child);
+		if (w == NULL)
+			continue;
+		qDebug() << w->isHidden();
+	}
+}	
+
+void CommandWidget::addLastOne()
+{
+	int index = ::getIndex(buttons_, shownButtons_.back());
+	if (index == buttons_.size() - 1)
+		index = 0;
+	buttonContainer_->addWidget(buttons_[index + 1]);
+	shownButtons_.push_back(buttons_[index + 1]);
+	shownButtons_.back()->setVisible(true);
+}
+
+void CommandWidget::removeFirstOne()
+{
+	auto w = shownButtons_.front();
 	buttonContainer_->removeWidget(shownButtons_.front());
 	shownButtons_.pop_front();
-	shownButtons_.push_back(buttons_[i]);
+	w->setVisible(false);
+	showHidden(children());
 }
 
 void CommandWidget::rightShift()
+{
+	addFirstOne();
+	removeLastOne();
+}
+
+void CommandWidget::addFirstOne()
+{
+	int index = ::getIndex(buttons, shownButtons_.front());
+	if (index == 0)
+		index = buttons_.size() - 1;
+	buttonContainer_->addWidget(buttons_[index + 1]);
+
+}
+
+void CommandWidget::removeLastOne()
 {
 }
