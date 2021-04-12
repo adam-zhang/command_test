@@ -46,5 +46,5 @@ void Invoker::onRightClicked()
 
 void Invoker::onCenterClicked()
 {
-	//emit(centerButtonClicked());
+	emit(centerButtonClicked());
 }

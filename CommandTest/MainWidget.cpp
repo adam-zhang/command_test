@@ -9,6 +9,7 @@
 #include "Invoker.h"
 #include "CommandWidget.h"
 #include "ContentWidget.h"
+#include "CommandItem.h"
 #include <QLabel>
 #include <QVBoxLayout>
 
@@ -28,10 +29,18 @@ void MainWidget::initialize()
 	auto invoker = new Invoker;
 	connect(invoker, &Invoker::leftButtonClicked, this, &MainWidget::onLeftButtonClicked);
 	connect(invoker, &Invoker::rightButtonClicked, this, &MainWidget::onRightButtonClicked);
+	connect(invoker, &Invoker::centerButtonClicked, this, &MainWidget::onCenterButtonClicked);
 	layout->addWidget(invoker);
 	commandWidget_ = new CommandWidget;
 	layout->addWidget(commandWidget_);
-	layout->addWidget(new ContentWidget);
+	contentWidget_ = new ContentWidget;
+	layout->addWidget(contentWidget_);
+}
+
+void MainWidget::onCenterButtonClicked()
+{
+	auto item = commandWidget_->centralItem();
+	contentWidget_->setItem(item);
 }
 
 void MainWidget::onLeftButtonClicked()

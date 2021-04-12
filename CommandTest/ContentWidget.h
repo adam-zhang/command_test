@@ -8,6 +8,8 @@
 #define __CONTENTWIDGET__H
 
 #include <QWidget>
+#include "CommandItem.h"
+class QLabel;
 
 class ContentWidget : public QWidget
 {
@@ -15,5 +17,12 @@ class ContentWidget : public QWidget
 public:
 	ContentWidget(QWidget* parent = 0);
 	~ContentWidget();
+private:
+	void initialize();
+public:
+	void setItem(CommandItem item);
+private:
+	QLabel* label_ = 0;
+
 };
 #endif//__CONTENTWIDGET__H

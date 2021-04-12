@@ -25,7 +25,7 @@ private slots:
 signals:
 	void leftButtonClicked();
 	void rightButtonClicked();
-	void centerButtonClicked(CommandItem);
+	void centerButtonClicked();
 
 };
 #endif//__INVOKER__H

@@ -42,5 +42,6 @@ private:
 public:
 	void leftShift();
 	void rightShift();
+	CommandItem centralItem();
 };
 #endif//__COMMANDWIDGET__H

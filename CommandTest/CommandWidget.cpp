@@ -159,6 +159,8 @@ void showHidden(const QObjectList& list)
 	}
 }	
 
+CommandItem CommandWidget::centralItem()
+{ return buttons_[1]->item();}
 
 void increaseItems(std::list<CommandItem>& items)
 {

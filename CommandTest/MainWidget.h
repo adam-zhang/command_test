@@ -10,6 +10,7 @@
 #include <QWidget>
 
 class CommandWidget;
+class ContentWidget;
 
 class MainWidget : public QWidget
 {
@@ -21,8 +22,10 @@ private:
 	void initialize();
 private:
 	CommandWidget* commandWidget_ = 0;
+	ContentWidget* contentWidget_ = 0;
 private slots:
 	void onLeftButtonClicked();
 	void onRightButtonClicked();
+	void onCenterButtonClicked();
 };
 #endif//__MAINWIDGET__H
