@@ -15,9 +15,12 @@ class CommandButton : public QLabel
 	Q_OBJECT
 public:
 	CommandButton(CommandItem item, QWidget* parent = 0);
-	~CommandButton();
+	virtual ~CommandButton();
 private:
 	CommandItem item_;
+public:
+	CommandItem item()
+	{ return item_;}
 private:
 	void initialize();
 };

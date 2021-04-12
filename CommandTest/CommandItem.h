@@ -7,6 +7,8 @@
 #ifndef __COMMANDITEM__H
 #define __COMMANDITEM__H
 
+#include <ostream>
+#include <QDebug>
 
 enum class CommandItem
 {
@@ -15,5 +17,8 @@ enum class CommandItem
 	Message,
 	Navigation,
 	Warning,
+	None,
 };
+
+
 #endif//__COMMANDITEM__H

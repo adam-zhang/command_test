@@ -10,6 +10,7 @@
 #include <QWidget>
 #include <vector>
 #include <list>
+#include "CommandItem.h"
 
 class CommandButton;
 
@@ -23,20 +24,21 @@ private:
 	void initialize();
 	void makeWidgets();
 	void addButtons();
+	void removeButtons();
 	QLayout* makeButtonContainer();
 	int getIndex();
 	int getLastIndex();
 	void removeWidgets();
-	void addLastOne();
-	void removeFirstOne();
-	void addFirstOne();
-	void removeLastOne();
-	//int getIndex(CommandButton*);
+	void hideButtons();
+	void showButtons();
+	void leftShiftButtons();
+	void rightShiftButtons();
 private:
 	QLayout* buttonContainer_;
+	int current_;
 private:
+	std::list<CommandItem> items_;
 	std::vector<CommandButton*> buttons_;
-	std::list<CommandButton*> shownButtons_;
 public:
 	void leftShift();
 	void rightShift();

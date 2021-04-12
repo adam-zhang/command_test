@@ -44,9 +44,6 @@ QString getImage(CommandItem& item)
 void CommandButton::initialize()
 {
 	QPixmap pixmap(getImage(item_));
-	Logger::write("item", int(item_));
-	Logger::write("width", pixmap.width());
-	Logger::write("height", pixmap.height());
 	setPixmap(QPixmap(getImage(item_)));	
 }
 

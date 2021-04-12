@@ -16,6 +16,7 @@
 CommandWidget::CommandWidget(QWidget* parent)
 	: QWidget(parent)
 	  , buttonContainer_(0)
+	  , current_(0)
 {
 	initialize();
 }
@@ -26,24 +27,51 @@ CommandWidget::~CommandWidget()
 
 void CommandWidget::initialize()
 {
-	buttons_ = {
-		new CommandButton(CommandItem::Music),
-		new CommandButton(CommandItem::Setting),
-		new CommandButton(CommandItem::Message),
-		new CommandButton(CommandItem::Navigation),
-		new CommandButton(CommandItem::Warning)
+	items_ = {
+		CommandItem::Setting,
+		CommandItem::Music,
+		CommandItem::Message,
+		CommandItem::Navigation,
+		CommandItem::Warning
 	};
 	makeWidgets();
 	assert(buttonContainer_);
 	addButtons();
+	hideButtons();
+}
+
+void CommandWidget::hideButtons()
+{
+	auto index = 0;
+	for(auto i : buttons_)
+	{
+		if (index >= 3)
+			i->hide();
+		++index;
+	}
+}
+
+CommandItem getItem(const std::list<CommandItem>& items, int index)
+{
+	int i = 0;
+	for(auto w : items)
+	{
+		if (i == index)
+			return w;
+		++i;
+	}
+	assert(false);
+	return CommandItem::None;
 }
 
 void CommandWidget::addButtons()
 {
-	for(auto i = 0; i != 3; ++i)
+	for(int i = 0; i != 3; ++i)
 	{
-		buttonContainer_->addWidget(buttons_[i]);
-		shownButtons_.push_back(buttons_[i]);
+		CommandItem item = getItem(items_, i); 
+		auto w = new CommandButton(item);
+		buttons_.push_back(w);
+		buttonContainer_->addWidget(w);
 	}
 }
 
@@ -61,6 +89,8 @@ QLayout* CommandWidget::makeButtonContainer()
 	return buttonContainer_;
 }
 
+
+
 int getIndex(const std::vector<CommandButton*>& buttons, CommandButton* button)
 {
 	for(auto i = 0; i != buttons.size(); ++i)
@@ -68,35 +98,58 @@ int getIndex(const std::vector<CommandButton*>& buttons, CommandButton* button)
 			return i;
 	assert(false);
 	return -1;
-
 }
 
-//int CommandWidget::getIndex()
-//{
-//	auto w = shownButtons_.front();
-//	return ::getIndex(buttons_, w);
-//}
+QString toString(CommandItem item)
+{
+	std::map<CommandItem, QString> m{
+		{CommandItem::Music, "Music"},
+			{CommandItem::Setting, "Setting"},
+			{CommandItem::Message, "Message"},
+			{CommandItem::Navigation, "Navigation"},
+			{CommandItem::Warning, "Warning"}};
+	return m[item];
+}
 
-//int CommandWidget::getLastIndex()
-//{
-//	auto w = shownButtons_.end();
-//	return ::getIndex(buttons_, w);
-//}
+void showOrders(const std::list<CommandButton*>& buttons)
+{
+	for(auto button : buttons)
+		qDebug() << toString(button->item()) << " " << button->isHidden();
+	qDebug() << " ";
+}
 
-//void CommandWidget::removeWidgets()
+void decreaseItems(std::list<CommandItem>& list)
+{
+	auto item = list.front();
+	list.pop_front();
+	list.push_back(item);
+}
+
+
+void CommandWidget::leftShift()
+{
+	removeButtons();
+	decreaseItems(items_);
+	addButtons();
+}
+
+void CommandWidget::showButtons()
+{
+	for(auto w : buttons_)
+	{
+		w->show();
+	}
+}
+
+
+
+//void CommandWidget::showFirstOne()
 //{
 //
 //}
 
-void CommandWidget::leftShift()
-{
-	addLastOne();
-	removeFirstOne();
-}
-
 void showHidden(const QObjectList& list)
 {
-	qDebug() << list.size();
 	for(auto child : list)
 	{
 		auto w = dynamic_cast<QWidget*>(child);
@@ -106,40 +159,24 @@ void showHidden(const QObjectList& list)
 	}
 }	
 
-void CommandWidget::addLastOne()
-{
-	int index = ::getIndex(buttons_, shownButtons_.back());
-	if (index == buttons_.size() - 1)
-		index = 0;
-	buttonContainer_->addWidget(buttons_[index + 1]);
-	shownButtons_.push_back(buttons_[index + 1]);
-	shownButtons_.back()->setVisible(true);
-}
 
-void CommandWidget::removeFirstOne()
+void increaseItems(std::list<CommandItem>& items)
 {
-	auto w = shownButtons_.front();
-	buttonContainer_->removeWidget(shownButtons_.front());
-	shownButtons_.pop_front();
-	w->setVisible(false);
-	showHidden(children());
+	auto i = items.back();
+	items.pop_back();
+	items.push_front(i);
 }
 
 void CommandWidget::rightShift()
 {
-	addFirstOne();
-	removeLastOne();
+	removeButtons();
+	increaseItems(items_);
+	addButtons();
 }
 
-void CommandWidget::addFirstOne()
+void CommandWidget::removeButtons()
 {
-	int index = ::getIndex(buttons, shownButtons_.front());
-	if (index == 0)
-		index = buttons_.size() - 1;
-	buttonContainer_->addWidget(buttons_[index + 1]);
-
-}
-
-void CommandWidget::removeLastOne()
-{
+	for(auto button : buttons_)
+		button->deleteLater();
+	buttons_.clear();
 }
