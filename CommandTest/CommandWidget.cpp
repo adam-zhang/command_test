@@ -27,7 +27,7 @@ CommandWidget::~CommandWidget()
 
 void CommandWidget::initialize()
 {
-	WidgetAssistant::setBackgroundColor(this, Qt::green);
+	//WidgetAssistant::setBackgroundColor(this, Qt::green);
 	items_ = {
 		CommandItem::Setting,
 		CommandItem::Music,
@@ -110,6 +110,9 @@ void decreaseItems(std::list<CommandItem>& list)
 
 void CommandWidget::shiftToLeft()
 {
+	if (isShifting_)
+		return;
+	isShifting_ = true;
 	cloneLeft();
 	shiftLeft();
 }
@@ -122,7 +125,6 @@ void CommandWidget::cloneLeft()
 	int w = buttons_[0]->geometry().width();
 	int h = buttons_[0]->geometry().height();
 	p->setGeometry(x, y, w, h);
-	//p->show();
 	buttons_.push_back(p);
 }
 
@@ -138,6 +140,7 @@ void CommandWidget::onShifterDone(CommandButton* button)
 {
 	button->deleteLater();
 	buttons_.erase(std::find(buttons_.begin(), buttons_.end(), button));
+	isShifting_ = false;
 }
 
 void CommandWidget::cloneRight()
@@ -156,6 +159,9 @@ void CommandWidget::cloneRight()
 
 void CommandWidget::shiftToRight()
 {
+	if (isShifting_)
+		return;
+	isShifting_ = true;
 	cloneRight();
 	shiftRight();
 }

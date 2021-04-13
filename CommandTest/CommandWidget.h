@@ -43,6 +43,7 @@ private:
 	std::shared_ptr<Shifter> shifter_;
 	std::list<CommandItem> items_;
 	std::vector<CommandButton*> buttons_;
+	bool isShifting_ = false;
 public:
 	void shiftToLeft();
 	void shiftToRight();
