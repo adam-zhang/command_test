@@ -47,4 +47,11 @@ void CommandButton::initialize()
 	setPixmap(QPixmap(getImage(item_)));	
 }
 
+CommandButton* CommandButton::clone()
+{
+	auto p = new CommandButton(item_, static_cast<QWidget*>(parent()));
+	p->setVisible(true);
+	return p;
+}
+
 

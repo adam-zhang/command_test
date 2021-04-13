@@ -14,7 +14,9 @@ set(sources main.cpp
 	ContentWidget.cpp
 	GlobalSetting.cpp
 	CommandButton.cpp
+	WidgetAssistant.cpp
 	Logger.cpp
+	Shifter.cpp
 	images.qrc
 	)
 add_executable(${PROJECT_NAME} ${sources})

@@ -9,14 +9,14 @@
 #include "CommandButton.h"
 #include "CommandItem.h"
 #include "Logger.h"
+#include "WidgetAssistant.h"
+#include "Shifter.h"
 #include <QHBoxLayout>
 #include <QDebug>
 #include <cassert>
 
 CommandWidget::CommandWidget(QWidget* parent)
 	: QWidget(parent)
-	  , buttonContainer_(0)
-	  , current_(0)
 {
 	initialize();
 }
@@ -27,6 +27,7 @@ CommandWidget::~CommandWidget()
 
 void CommandWidget::initialize()
 {
+	WidgetAssistant::setBackgroundColor(this, Qt::green);
 	items_ = {
 		CommandItem::Setting,
 		CommandItem::Music,
@@ -34,22 +35,12 @@ void CommandWidget::initialize()
 		CommandItem::Navigation,
 		CommandItem::Warning
 	};
+	setFixedWidth(40 * items_.size());
+	setFixedHeight(40);
 	makeWidgets();
-	assert(buttonContainer_);
 	addButtons();
-	hideButtons();
 }
 
-void CommandWidget::hideButtons()
-{
-	auto index = 0;
-	for(auto i : buttons_)
-	{
-		if (index >= 3)
-			i->hide();
-		++index;
-	}
-}
 
 CommandItem getItem(const std::list<CommandItem>& items, int index)
 {
@@ -66,12 +57,12 @@ CommandItem getItem(const std::list<CommandItem>& items, int index)
 
 void CommandWidget::addButtons()
 {
-	for(int i = 0; i != 3; ++i)
+	for(int i = 0; i != items_.size(); ++i)
 	{
 		CommandItem item = getItem(items_, i); 
-		auto w = new CommandButton(item);
+		auto w = new CommandButton(item, this);
+		w->setGeometry(i * 40, 0, 40, 40);
 		buttons_.push_back(w);
-		buttonContainer_->addWidget(w);
 	}
 }
 
@@ -79,17 +70,8 @@ void CommandWidget::makeWidgets()
 {
 	auto layout = new QHBoxLayout(this);
 	layout->addStretch();
-	layout->addLayout(makeButtonContainer());
 	layout->addStretch();
 }
-
-QLayout* CommandWidget::makeButtonContainer()
-{
-	buttonContainer_ = new QHBoxLayout;
-	return buttonContainer_;
-}
-
-
 
 int getIndex(const std::vector<CommandButton*>& buttons, CommandButton* button)
 {
@@ -126,27 +108,62 @@ void decreaseItems(std::list<CommandItem>& list)
 }
 
 
-void CommandWidget::leftShift()
+void CommandWidget::shiftToLeft()
 {
-	removeButtons();
-	decreaseItems(items_);
-	addButtons();
+	cloneLeft();
+	shiftLeft();
 }
 
-void CommandWidget::showButtons()
+void CommandWidget::cloneLeft()
 {
-	for(auto w : buttons_)
-	{
-		w->show();
-	}
+	auto p = buttons_[0]->clone();
+	int x = buttons_[0]->geometry().width() * buttons_.size();
+	int y = buttons_[0]->geometry().y();
+	int w = buttons_[0]->geometry().width();
+	int h = buttons_[0]->geometry().height();
+	p->setGeometry(x, y, w, h);
+	//p->show();
+	buttons_.push_back(p);
 }
 
 
 
-//void CommandWidget::showFirstOne()
-//{
-//
-//}
+void CommandWidget::shiftLeft()
+{
+	shifter_ = std::make_shared<Shifter>(Direction::Left, buttons_);
+	connect(shifter_.get(), &Shifter::done, this, &CommandWidget::onShifterDone);
+}
+
+void CommandWidget::onShifterDone(CommandButton* button)
+{
+	button->deleteLater();
+	buttons_.erase(std::find(buttons_.begin(), buttons_.end(), button));
+}
+
+void CommandWidget::cloneRight()
+{
+	auto p = buttons_[buttons_.size() - 1]->clone();
+	int x = -buttons_[0]->geometry().width();
+	int y = buttons_[0]->geometry().y();
+	int w = buttons_[0]->geometry().width();
+	int h = buttons_[0]->geometry().height();
+	p->setGeometry(x, y, w, h);
+	buttons_.emplace(buttons_.begin(), p);
+	assert(buttons_[0] == p);
+}
+
+
+
+void CommandWidget::shiftToRight()
+{
+	cloneRight();
+	shiftRight();
+}
+
+
+
+
+
 
 void showHidden(const QObjectList& list)
 {
@@ -169,16 +186,9 @@ void increaseItems(std::list<CommandItem>& items)
 	items.push_front(i);
 }
 
-void CommandWidget::rightShift()
+void CommandWidget::shiftRight()
 {
-	removeButtons();
-	increaseItems(items_);
-	addButtons();
+	shifter_ = std::make_shared<Shifter>(Direction::Right, buttons_);
+	connect(shifter_.get(), &Shifter::done, this, &CommandWidget::onShifterDone);
 }
 
-void CommandWidget::removeButtons()
-{
-	for(auto button : buttons_)
-		button->deleteLater();
-	buttons_.clear();
-}

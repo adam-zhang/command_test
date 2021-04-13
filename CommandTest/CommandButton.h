@@ -21,6 +21,7 @@ private:
 public:
 	CommandItem item()
 	{ return item_;}
+	CommandButton* clone();
 private:
 	void initialize();
 };

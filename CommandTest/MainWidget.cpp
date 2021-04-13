@@ -45,10 +45,10 @@ void MainWidget::onCenterButtonClicked()
 
 void MainWidget::onLeftButtonClicked()
 {
-	commandWidget_->leftShift();
+	commandWidget_->shiftToLeft();
 }
 
 void MainWidget::onRightButtonClicked()
 {
-	commandWidget_->rightShift();
+	commandWidget_->shiftToRight();
 }

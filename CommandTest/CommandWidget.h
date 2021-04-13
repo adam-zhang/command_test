@@ -10,9 +10,11 @@
 #include <QWidget>
 #include <vector>
 #include <list>
+#include <memory>
 #include "CommandItem.h"
 
 class CommandButton;
+class Shifter;
 
 class CommandWidget : public QWidget
 {
@@ -24,24 +26,26 @@ private:
 	void initialize();
 	void makeWidgets();
 	void addButtons();
-	void removeButtons();
-	QLayout* makeButtonContainer();
 	int getIndex();
 	int getLastIndex();
 	void removeWidgets();
-	void hideButtons();
 	void showButtons();
 	void leftShiftButtons();
 	void rightShiftButtons();
+	void createTimer();
+	void cloneLeft();
+	void cloneRight();
+	void shiftLeft();
+	void shiftRight();
+private slots:
+	void onShifterDone(CommandButton*);
 private:
-	QLayout* buttonContainer_;
-	int current_;
-private:
+	std::shared_ptr<Shifter> shifter_;
 	std::list<CommandItem> items_;
 	std::vector<CommandButton*> buttons_;
 public:
-	void leftShift();
-	void rightShift();
+	void shiftToLeft();
+	void shiftToRight();
 	CommandItem centralItem();
 };
 #endif//__COMMANDWIDGET__H
